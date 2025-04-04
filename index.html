@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Ambulance Booking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .hero-bg {
+            background-image: url('https://images.pexels.com/photos/4386467/pexels-photo-4386467.jpeg');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="font-sans">
+    <!-- Navigation -->
+    <nav class="bg-red-600 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-ambulance text-2xl"></i>
+                <h1 class="text-xl font-bold">EmergencyCare</h1>
+            </div>
+            <div class="hidden md:flex space-x-6">
+                <a href="#" class="hover:text-gray-200">Home</a>
+                <a href="#" class="hover:text-gray-200">Services</a>
+                <a href="#" class="hover:text-gray-200">Contact</a>
+            </div>
+            <button class="md:hidden">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-bg text-white py-20 px-4">
+        <div class="container mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Emergency Ambulance Service</h1>
+            <p class="text-xl mb-8">24/7 medical assistance with rapid response times</p>
+            <a href="booking.html" class="bg-white text-red-600 font-bold py-3 px-8 rounded-full hover:bg-gray-100 transition duration-300 inline-block">
+                Book Ambulance Now
+            </a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Why Choose Us?</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <i class="fas fa-clock text-red-600 text-4xl mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">24/7 Availability</h3>
+                    <p class="text-gray-600">Our emergency services are available round the clock, every day of the year.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <i class="fas fa-tachometer-alt text-red-600 text-4xl mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Fast Response</h3>
+                    <p class="text-gray-600">Average response time of under 15 minutes in urban areas.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <i class="fas fa-user-md text-red-600 text-4xl mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Medical Staff</h3>
+                    <p class="text-gray-600">Qualified paramedics and emergency medical technicians on every vehicle.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">EmergencyCare</h3>
+                    <p>Providing reliable emergency medical transportation services since 2010.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-red-400">Home</a></li>
+                        <li><a href="booking.html" class="hover:text-red-400">Book Ambulance</a></li>
+                        <li><a href="#" class="hover:text-red-400">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Contact</h3>
+                    <p><i class="fas fa-phone-alt mr-2"></i> Emergency: 911</p>
+                    <p><i class="fas fa-phone mr-2"></i> Office: +1 (555) 123-4567</p>
+                    <p><i class="fas fa-envelope mr-2"></i> contact@emergencycare.com</p>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center">
+                <p>&copy; 2023 EmergencyCare. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
