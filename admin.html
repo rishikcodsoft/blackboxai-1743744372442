@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | EmergencyCare</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .status-pending {
+            background-color: #FEF3C7;
+            color: #92400E;
+        }
+        .status-enroute {
+            background-color: #DBEAFE;
+            color: #1E40AF;
+        }
+        .status-completed {
+            background-color: #D1FAE5;
+            color: #065F46;
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-gray-800 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-ambulance text-2xl"></i>
+                <h1 class="text-xl font-bold">EmergencyCare Admin</h1>
+            </div>
+            <div class="flex space-x-4">
+                <a href="index.html" class="hover:text-gray-300">
+                    <i class="fas fa-home"></i>
+                </a>
+                <button id="refreshBtn" class="hover:text-gray-300">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Admin Content -->
+    <main class="min-h-screen py-8 px-4">
+        <div class="container mx-auto">
+            <!-- Dashboard Header -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Ambulance Bookings</h2>
+                    <p class="text-gray-600">Manage all emergency requests</p>
+                </div>
+                <div class="mt-4 md:mt-0 flex space-x-2">
+                    <div class="bg-white p-3 rounded-lg shadow-sm">
+                        <p class="text-sm text-gray-500">Total Bookings</p>
+                        <p id="totalBookings" class="text-xl font-bold">0</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg shadow-sm">
+                        <p class="text-sm text-gray-500">Active Now</p>
+                        <p id="activeBookings" class="text-xl font-bold">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bookings Table -->
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Booking ID
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Patient
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Emergency Type
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Location
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Time
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Status
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsTable" class="bg-white divide-y divide-gray-200">
+                            <!-- Bookings will be loaded here -->
+                            <tr>
+                                <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                                    Loading bookings...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2023 EmergencyCare. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Sample booking data
+        const sampleBookings = [
+            {
+                bookingId: 'AMB-789456',
+                name: 'Sarah Johnson',
+                phone: '(555) 987-6543',
+                emergencyType: 'cardiac',
+                location: '456 Oak Avenue, Springfield',
+                notes: 'Patient experiencing chest pain',
+                timestamp: new Date(Date.now() - 3600000).toISOString(),
+                status: 'completed'
+            },
+            {
+                bookingId: 'AMB-123456',
+                name: 'John Doe',
+                phone: '(555) 123-4567',
+                emergencyType: 'trauma',
+                location: '123 Main St, Anytown',
+                notes: 'Car accident victim',
+                timestamp: new Date(Date.now() - 1800000).toISOString(),
+                status: 'enroute'
+            },
+            {
+                bookingId: 'AMB-654321',
+                name: 'Maria Garcia',
+                phone: '(555) 456-7890',
+                emergencyType: 'stroke',
+                location: '789 Pine Road, Lakeside',
+                notes: 'Facial drooping observed',
+                timestamp: new Date(Date.now() - 900000).toISOString(),
+                status: 'pending'
+            }
+        ];
+
+        // Load bookings when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBookings();
+            
+            // Add latest booking from localStorage if exists
+            const latestBooking = JSON.parse(localStorage.getItem('latestBooking'));
+            if (latestBooking) {
+                latestBooking.status = 'pending';
+                sampleBookings.unshift(latestBooking);
+                loadBookings();
+            }
+        });
+
+        // Refresh button
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            loadBookings();
+        });
+
+        function loadBookings() {
+            const tableBody = document.getElementById('bookingsTable');
+            tableBody.innerHTML = '';
+            
+            // Update counters
+            document.getElementById('totalBookings').textContent = sampleBookings.length;
+            document.getElementById('activeBookings').textContent = 
+                sampleBookings.filter(b => b.status !== 'completed').length;
+            
+            if (sampleBookings.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                            No bookings found
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            // Sort by timestamp (newest first)
+            const sortedBookings = [...sampleBookings].sort((a, b) => 
+                new Date(b.timestamp) - new Date(a.timestamp));
+            
+            // Populate table
+            sortedBookings.forEach(booking => {
+                const row = document.createElement('tr');
+                const statusClass = `status-${booking.status}`;
+                const statusText = {
+                    'pending': 'Pending',
+                    'enroute': 'En Route',
+                    'completed': 'Completed'
+                }[booking.status];
+                
+                const emergencyType = {
+                    'cardiac': 'Cardiac',
+                    'trauma': 'Trauma',
+                    'stroke': 'Stroke',
+                    'respiratory': 'Respiratory',
+                    'other': 'Other'
+                }[booking.emergencyType] || booking.emergencyType;
+                
+                const timeString = new Date(booking.timestamp).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        ${booking.bookingId}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${booking.name}</div>
+                        <div class="text-sm text-gray-500">${booking.phone}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${emergencyType}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${booking.location}</div>
+                        <div class="text-sm text-gray-500">${timeString}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${timeString}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                            ${statusText}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button class="text-red-600 hover:text-red-900 mr-3 view-btn" data-id="${booking.bookingId}">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="text-blue-600 hover:text-blue-900 edit-btn" data-id="${booking.bookingId}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Add event listeners to buttons
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const bookingId = this.getAttribute('data-id');
+                    alert(`View details for booking ${bookingId}`);
+                });
+            });
+
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const bookingId = this.getAttribute('data-id');
+                    alert(`Edit booking ${bookingId}`);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
